@@ -28,7 +28,7 @@ O **Agrotech** é um sistema de agricultura de precisão que integra sensores Io
 git clone https://github.com/seu-usuario/agrotech-561497.git
 cd agrotech-561497
 ```
-## Verificar estrutura do projeto
+### Verificar estrutura do projeto
 ```
 ls -la
 ```
