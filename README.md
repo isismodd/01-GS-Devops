@@ -146,13 +146,13 @@ Variáveis de ambiente configuradas | Portas expostas
 
 ## Passo 8: Executar Testes da API com SELECT no Banco
 
-- 7.1 Conectar ao Banco para Evidências
+- 8.1 Conectar ao Banco para Evidências
 ```
 # Abrir conexão com o MySQL
 sudo docker exec -it db-561497 mysql -uroot -proot123
 USE agrotech;
 ```
-- 7.2 CREATE - Inserir Registro de Solo
+- 8.2 CREATE - Inserir Registro de Solo
 
 API:
 ```
@@ -178,7 +178,7 @@ Saída do SELECT:
 ```
 CREATE evidenciado com SELECT
 
-- 7.3 CREATE - Inserir Previsão de Satélite
+- 8.3 CREATE - Inserir Previsão de Satélite
 API:
 ```
 curl -X POST http://localhost:8080/api/agro/satelite \
@@ -208,7 +208,7 @@ Saída do SELECT:
 ```
 CREATE da segunda tabela evidenciado
 
-- 7.4 READ - Listar Todos os Registros
+- 8.4 READ - Listar Todos os Registros
 API:
 ```
 curl http://localhost:8080/api/agro/solo
@@ -240,7 +240,7 @@ Saída do SELECT:
 ```
 READ evidenciado com SELECT
 
-- 7.5 UPDATE - Atualizar Registro
+- 8.5 UPDATE - Atualizar Registro
 API:
 ```
 curl -X PUT http://localhost:8080/api/agro/solo/1 \
@@ -272,7 +272,7 @@ Saída do SELECT:
 ```
 UPDATE evidenciado com SELECT
 
-- 7.6 DELETE - Remover Registro
+- 8.6 DELETE - Remover Registro
 API:
 ```
 curl -X DELETE http://localhost:8080/api/agro/solo/1
@@ -290,7 +290,7 @@ Empty set
 ```
 DELETE evidenciado com SELECT
 
-- 7.7 Evidência das Duas Tabelas com Relacionamento
+- 8.7 Evidência das Duas Tabelas com Relacionamento
 ```
 SHOW TABLES;
 ```
