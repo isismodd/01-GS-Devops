@@ -154,13 +154,13 @@ USE agrotech;
 ```
 - 7.2 CREATE - Inserir Registro de Solo
 
- - API:
+API:
 ```
 curl -X POST http://localhost:8080/api/agro/solo \
   -H "Content-Type: application/json" \
   -d '{"umidade":35.5,"temperatura":26.0,"dispositivoId":"ESP32-EVIDENCIA"}'
 ```
--- Saída da API:
+Saída da API:
 ```
 Ação: SISTEMA DE IRRIGAÇÃO ATIVADO. Solo seco e sem previsão de chuva.
 ```
@@ -178,7 +178,7 @@ Saída do SELECT:
 ```
 CREATE evidenciado com SELECT
 
-7.3 CREATE - Inserir Previsão de Satélite
+- 7.3 CREATE - Inserir Previsão de Satélite
 API:
 ```
 curl -X POST http://localhost:8080/api/agro/satelite \
@@ -208,7 +208,7 @@ Saída do SELECT:
 ```
 CREATE da segunda tabela evidenciado
 
-7.4 READ - Listar Todos os Registros
+- 7.4 READ - Listar Todos os Registros
 API:
 ```
 curl http://localhost:8080/api/agro/solo
@@ -240,7 +240,7 @@ Saída do SELECT:
 ```
 READ evidenciado com SELECT
 
-7.5 UPDATE - Atualizar Registro
+- 7.5 UPDATE - Atualizar Registro
 API:
 ```
 curl -X PUT http://localhost:8080/api/agro/solo/1 \
@@ -272,7 +272,7 @@ Saída do SELECT:
 ```
 UPDATE evidenciado com SELECT
 
-7.6 DELETE - Remover Registro
+- 7.6 DELETE - Remover Registro
 API:
 ```
 curl -X DELETE http://localhost:8080/api/agro/solo/1
@@ -290,7 +290,7 @@ Empty set
 ```
 DELETE evidenciado com SELECT
 
-7.7 Evidência das Duas Tabelas com Relacionamento
+- 7.7 Evidência das Duas Tabelas com Relacionamento
 ```
 SHOW TABLES;
 ```
