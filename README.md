@@ -32,7 +32,7 @@ cd agrotech-561497
 ```
 ls -la
 ```
-## Deve conter: pom.xml, src/, Dockerfile, docker-compose.yml
+Deve conter: pom.xml, src/, Dockerfile, docker-compose.yml
 
 ### Passo 3: Construir e Subir os Containers
 
@@ -65,8 +65,6 @@ sudo docker logs app-561497 --tail 50
 # Logs do banco de dados
 sudo docker logs db-561497 --tail 30
 ```
-
----
 
 ## Passo 5: Executar Testes da API
 
