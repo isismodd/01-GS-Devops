@@ -32,7 +32,7 @@ cd agrotech-561497
 ```
 ls -la
 ```
-Deve conter: pom.xml, src/, Dockerfile, docker-compose.yml
+Deve conter: docker-compose.yml  Dockerfile  mvnw  mvnw.cmd  pom.xml  src  target
 
 ### Passo 3: Construir e Subir os Containers
 
