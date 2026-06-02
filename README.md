@@ -11,6 +11,7 @@ O **Agrotech** é um sistema de agricultura de precisão que integra sensores Io
 - CRUD completo para registros de solo
 - Persistência de dados em banco MySQL
 
+---
 
 ## Tutorial de Execução
 
