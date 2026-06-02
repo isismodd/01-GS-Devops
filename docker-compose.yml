@@ -1,0 +1,44 @@
+services:
+  db-561497:
+    image: mysql:8.0
+    container_name: db-561497
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: agrotech
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data_561497:/var/lib/mysql
+    networks:
+      - agrotech_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app-561497:
+    build: .
+    container_name: app-561497
+    restart: always
+    depends_on:
+      db-561497:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-561497:3306/agrotech?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root123
+    networks:
+      - agrotech_network
+    user: appuser
+
+networks:
+  agrotech_network:
+    driver: bridge
+
+volumes:
+  mysql_data_561497:
+    name: mysql_data_561497
