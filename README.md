@@ -55,8 +55,9 @@ CONTAINER ID   IMAGE                        NAMES          STATUS
 xxxxxxxxxxxx   agrotech-561497-app-561497   app-561497     Up
 xxxxxxxxxxxx   mysql:8.0                    db-561497      Up (healthy)
 ```
+Containers em modo background
 
-### Passo 4: Verificar Logs
+### Passo 4: Verificar Logs dos containers
 
 ```
 # Logs da aplicação
@@ -66,40 +67,125 @@ sudo docker logs app-561497 --tail 50
 sudo docker logs db-561497 --tail 30
 ```
 
-## Passo 5: Executar Testes da API
+### Passo 5: Acessar o Container da Aplicação
 
-Após os containers estarem rodando, realize os testes abaixo para validar o CRUD completo da aplicação.
+```
+# Entrar no container
+sudo docker exec -it app-561497 /bin/sh\
+```
+Evidência - Dentro do container:
+```
+# pwd
+/app
 
-### 6.1 CREATE - Criar Registro de Solo
+# ls -la
+total 24
+drwxr-xr-x 1 appuser appgroup 4096 Jun  2 03:40 .
+drwxr-xr-x 1 root    root      4096 Jun  2 03:40 ..
+-rw-r--r-- 1 appuser appgroup   21 Jun  2 03:40 app.jar
 
-Registra os dados de umidade e temperatura enviados pelo sensor IoT.
+# whoami
+appuser
 
+# exit
+```
+Usuário não privilegiado (appuser) | Diretório de trabalho (/app)
+
+
+### Passo 6: Verificar Volume Nomeado
+```
+# Listar volumes
+sudo docker volume ls
+```
+Evidência:
+```
+DRIVER    VOLUME NAME
+local     mysql_data_561497
+```
+
+Inspecionar o volume
+```
+sudo docker volume inspect mysql_data_561497
+```
+Evidência:
+```
+[
+    {
+        "CreatedAt": "2026-06-02T21:15:00Z",
+        "Driver": "local",
+        "Name": "mysql_data_561497",
+        "Mountpoint": "/var/lib/docker/volumes/mysql_data_561497/_data"
+    }
+]
+```
+Volume nomeado para persistência
+
+### Passo 7: Verificar Variáveis de Ambiente e Portas
+```
+# Variáveis de ambiente da aplicação
+sudo docker exec app-561497 env | grep -E "DB_HOST|SPRING_DATASOURCE"
+```
+Evidência:
+```
+DB_HOST=db-561497
+SPRING_DATASOURCE_URL=jdbc:mysql://db-561497:3306/agrotech
+SPRING_DATASOURCE_USERNAME=root
+SPRING_DATASOURCE_PASSWORD=root123
+```
+Portas expostas
+```
+sudo docker port app-561497
+sudo docker port db-561497
+```
+Evidência:
+```
+8080/tcp -> 0.0.0.0:8080
+3306/tcp -> 0.0.0.0:3306
+```
+Variáveis de ambiente configuradas | Portas expostas
+
+## Passo 8: Executar Testes da API com SELECT no Banco
+
+- 7.1 Conectar ao Banco para Evidências
+```
+# Abrir conexão com o MySQL
+sudo docker exec -it db-561497 mysql -uroot -proot123
+USE agrotech;
+```
+7.2 CREATE - Inserir Registro de Solo
+
+API:
 ```
 curl -X POST http://localhost:8080/api/agro/solo \
   -H "Content-Type: application/json" \
-  -d '{"umidade":35.5,"temperatura":26.0,"dispositivoId":"ESP32-FAZENDA-01"}'
+  -d '{"umidade":35.5,"temperatura":26.0,"dispositivoId":"ESP32-EVIDENCIA"}'
 ```
-
-Saída esperada:
-
+Saída da API:
 ```
-Ação: SISTEMA DE IRRIGAÇÃO ATIVADO. Solo seco e sem previsão de chuva.Saída esperada:
-
 Ação: SISTEMA DE IRRIGAÇÃO ATIVADO. Solo seco e sem previsão de chuva.
 ```
+SELECT no Banco (Evidência):
+```
+SELECT * FROM tab_registro_solo ORDER BY id_registro DESC LIMIT 1;
+```
+Saída do SELECT:
+```
++-------------+-------------+-----------------+---------------------+---------------------+
+| id_registro | num_umidade | num_temperatura | dat_leitura         | id_dispositivo      |
++-------------+-------------+-----------------+---------------------+---------------------+
+|           1 |        35.5 |            26.0 | 2026-06-02 21:30:00 | ESP32-EVIDENCIA     |
++-------------+-------------+-----------------+---------------------+---------------------+
+```
+CREATE evidenciado com SELECT
 
-### 6.2 CREATE - Criar Previsão de Satélite
-
-Registra os dados de previsão climática orbital.
-
+7.3 CREATE - Inserir Previsão de Satélite
+API:
 ```
 curl -X POST http://localhost:8080/api/agro/satelite \
   -H "Content-Type: application/json" \
   -d '{"regiao":"Setor_A_Principal","chuvaIminente":false}'
 ```
-
-Saída esperada:
-
+Saída da API:
 ```
 {
   "id": 1,
@@ -108,24 +194,26 @@ Saída esperada:
   "dataPrevisao": "2026-06-02"
 }
 ```
+SELECT no Banco (Evidência):
+```
+SELECT * FROM tab_previsao_satelite;
+```
+Saída do SELECT:
+```
++--------------+--------------------+--------------------+------------------+
+| id_previsao  | txt_regiao         | bol_chuva_iminente | dat_previsao     |
++--------------+--------------------+--------------------+------------------+
+|            1 | Setor_A_Principal  |                  0 | 2026-06-02       |
++--------------+--------------------+--------------------+------------------+
+```
+CREATE da segunda tabela evidenciado
 
-### 6.3 CREATE - Segundo Registro de Solo (Umidade Baixa)
-```
-curl -X POST http://localhost:8080/api/agro/solo \
-  -H "Content-Type: application/json" \
-  -d '{"umidade":25.0,"temperatura":24.0,"dispositivoId":"ESP32-FAZENDA-02"}'
-```
-Saída esperada:
-
-```
-Ação: SISTEMA DE IRRIGAÇÃO ATIVADO. Solo seco e sem previsão de chuva.
-```
-### 6.4 READ - Listar Todos os Registros de Solo
+7.4 READ - Listar Todos os Registros
+API:
 ```
 curl http://localhost:8080/api/agro/solo
 ```
-
-Saída esperada:
+Saída da API:
 ```
 [
   {
@@ -133,127 +221,110 @@ Saída esperada:
     "umidade": 35.5,
     "temperatura": 26.0,
     "dataLeitura": "2026-06-02T21:30:00",
-    "dispositivoId": "ESP32-FAZENDA-01",
-    "previsao": null
-  },
-  {
-    "id": 2,
-    "umidade": 25.0,
-    "temperatura": 24.0,
-    "dataLeitura": "2026-06-02T21:31:00",
-    "dispositivoId": "ESP32-FAZENDA-02",
+    "dispositivoId": "ESP32-EVIDENCIA",
     "previsao": null
   }
 ]
 ```
-
-### 6.5 READ - Buscar Registro por ID
+SELECT no Banco (Evidência):
 ```
-curl http://localhost:8080/api/agro/solo/1
+SELECT id_registro, num_umidade, num_temperatura, id_dispositivo FROM tab_registro_solo;
 ```
-
-Saída esperada:
+Saída do SELECT:
 ```
-{
-  "id": 1,
-  "umidade": 35.5,
-  "temperatura": 26.0,
-  "dataLeitura": "2026-06-02T21:30:00",
-  "dispositivoId": "ESP32-FAZENDA-01",
-  "previsao": null
-}
++-------------+-------------+-----------------+---------------------+
+| id_registro | num_umidade | num_temperatura | id_dispositivo      |
++-------------+-------------+-----------------+---------------------+
+|           1 |        35.5 |            26.0 | ESP32-EVIDENCIA     |
++-------------+-------------+-----------------+---------------------+
 ```
+READ evidenciado com SELECT
 
-### 6.6 UPDATE - Atualizar Registro de Solo
-
+7.5 UPDATE - Atualizar Registro
+API:
 ```
 curl -X PUT http://localhost:8080/api/agro/solo/1 \
   -H "Content-Type: application/json" \
-  -d '{"umidade":80.0,"temperatura":30.0,"dispositivoId":"ESP32-UPDATED"}'
+  -d '{"umidade":80.0,"temperatura":32.0,"dispositivoId":"ESP32-UPDATED"}'
 ```
-
-Saída esperada:
+Saída da API:
 ```
 {
   "id": 1,
   "umidade": 80.0,
-  "temperatura": 30.0,
+  "temperatura": 32.0,
   "dataLeitura": "2026-06-02T21:35:00",
   "dispositivoId": "ESP32-UPDATED",
   "previsao": null
 }
 ```
+SELECT no Banco (Evidência):
+```
+SELECT * FROM tab_registro_solo WHERE id_registro = 1;
+```
+Saída do SELECT:
+```
++-------------+-------------+-----------------+---------------------+------------------+
+| id_registro | num_umidade | num_temperatura | dat_leitura         | id_dispositivo   |
++-------------+-------------+-----------------+---------------------+------------------+
+|           1 |        80.0 |            32.0 | 2026-06-02T21:35:00 | ESP32-UPDATED    |
++-------------+-------------+-----------------+---------------------+------------------+
+```
+UPDATE evidenciado com SELECT
 
-### 6.7 READ - Verificar Registro Atualizado
-```
-curl http://localhost:8080/api/agro/solo/1
-```
-
-Saída esperada:
-```
-{
-  "id": 1,
-  "umidade": 80.0,
-  "temperatura": 30.0,
-  "dataLeitura": "2026-06-02T21:35:00",
-  "dispositivoId": "ESP32-UPDATED",
-  "previsao": null
-}
-```
-### 6.8 DELETE - Remover Registro de Solo
+7.6 DELETE - Remover Registro
+API:
 ```
 curl -X DELETE http://localhost:8080/api/agro/solo/1
 ```
 
-Saída esperada: (nenhuma saída - status 204 No Content)
+Saída da API: (nenhuma saída - status 204 No Content)
 
-### 6.9 READ - Confirmar Exclusão
+SELECT no Banco (Evidência):
 ```
-curl http://localhost:8080/api/agro/solo
+SELECT * FROM tab_registro_solo WHERE id_registro = 1;
 ```
+Saída do SELECT:
+```
+Empty set
+```
+DELETE evidenciado com SELECT
 
-Saída esperada:
+7.7 Evidência das Duas Tabelas com Relacionamento
 ```
-[
-  {
-    "id": 2,
-    "umidade": 25.0,
-    "temperatura": 24.0,
-    "dataLeitura": "2026-06-02T21:31:00",
-    "dispositivoId": "ESP32-FAZENDA-02",
-    "previsao": null
-  }
-]
+SHOW TABLES;
 ```
-
-### 6.10 Teste de Decisão Inteligente - Irrigação Bloqueada
-Para testar a regra de negócio (chuva iminente bloqueia irrigação):
-
+Saída:
 ```
-# Criar previsão com chuva iminente
-curl -X POST http://localhost:8080/api/agro/satelite \
-  -H "Content-Type: application/json" \
-  -d '{"regiao":"Setor_A_Principal","chuvaIminente":true}'
-
-# Enviar dados de solo seco
-curl -X POST http://localhost:8080/api/agro/solo \
-  -H "Content-Type: application/json" \
-  -d '{"umidade":30.0,"temperatura":25.0,"dispositivoId":"ESP32-TESTE"}'
++-----------------------+
+| Tables_in_agrotech    |
++-----------------------+
+| tab_previsao_satelite |
+| tab_registro_solo     |
++-----------------------+
 ```
-
-Saída esperada:
 ```
-SOLICITAÇÃO DE REGA RECEBIDA. Ação: REGA BLOQUEADA. Motivo: Dados orbitais indicam chuva iminente.
+SELECT * FROM tab_registro_solo;
+SELECT * FROM tab_previsao_satelite;
 ```
+Saída:
+```
+TAB_REGISTRO_SOLO (vazia após DELETE)
+TAB_PREVISAO_SATELITE:
++--------------+--------------------+--------------------+------------------+
+| id_previsao  | txt_regiao         | bol_chuva_iminente | dat_previsao     |
++--------------+--------------------+--------------------+------------------+
+|            1 | Setor_A_Principal  |                  0 | 2026-06-02       |
++--------------+--------------------+--------------------+------------------+
+```
+Duas tabelas com relacionamento evidenciadas
 
-### 6.11 Resumo dos Testes Realizados
+## 👥 Equipe HARPI
 
-| Operação | Método | Endpoint | Status |
-|----------|--------|----------|--------|
-| Criar registro solo | POST | `/api/agro/solo` | ✅ |
-| Criar previsão satélite | POST | `/api/agro/satelite` | ✅ |
-| Listar registros | GET | `/api/agro/solo` | ✅ |
-| Buscar por ID | GET | `/api/agro/solo/{id}` | ✅ |
-| Atualizar registro | PUT | `/api/agro/solo/{id}` | ✅ |
-| Deletar registro | DELETE | `/api/agro/solo/{id}` | ✅ |
-| Regra de negócio | POST | `/api/agro/solo` | ✅ |
+| Nome | RM |
+|------|-----|
+| Ana Clara de Oliveira Nascimento | RM 561957 |
+| Isis Macedo | RM 561497 |
+| Henrique Pereira | RM 565608 |
+| Pedro Mariutti | RM 75999 |
+| Rafael Carvalho Meireles | RM 563413 |
