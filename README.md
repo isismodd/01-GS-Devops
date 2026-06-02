@@ -3,6 +3,7 @@
 ### Descrição da Solução
 
 O **Agrotech** é um sistema de agricultura de precisão que integra sensores IoT (ESP32) e dados de satélites (NASA/ESA) para otimizar a irrigação de plantações. O sistema recebe dados de umidade e temperatura do solo, cruza com previsões meteorológicas orbitais e decide automaticamente se deve ativar ou bloquear o sistema de irrigação.
+O problema que buscamos resolver é a falta de informação em tempo real para agricultores sobre as condições do solo e clima, ajudando na tomada de decisão sobre irrigação e plantio. Essa solução também contribui diretamente com o meio ambiente, considerando que [**a agricultura é responsável por cerca de 70% de todo o consumo de água doce do planeta.**](#fonte-agua) Com dados precisos, é possível evitar o desperdício de água na irrigação, reduzindo a pressão sobre os recursos hídricos e tornando a produção agrícola mais sustentável.
 
 ### Funcionalidades Principais
 - Recebimento de dados telemétricos de sensores IoT (simulado)
@@ -328,3 +329,17 @@ Duas tabelas com relacionamento evidenciadas
 | Henrique Pereira | RM 565608 |
 | Pedro Mariutti | RM 75999 |
 | Rafael Carvalho Meireles | RM 563413 |
+
+---
+
+## Referências
+
+<span id="fonte-agua"></span>
+
+**Fonte - Consumo de água pela agricultura:**
+
+> Rodrigues-Silva, F. et al. (2025). "Recycling nutrients: The promise and perils of wastewater use in global and Brazilian agriculture." *Agricultural Water Management*, Volume 321. DOI: 10.1016/j.agwat.2025.109901
+
+> *"Agriculture is the world's largest consumer of freshwater, accounting for nearly 70% of global water withdrawals"* (Barbosa et al., 2017; Leonel and Tonetti, 2021)
+
+[🔝 Voltar ao topo](#)
