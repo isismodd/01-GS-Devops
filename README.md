@@ -152,19 +152,19 @@ Variáveis de ambiente configuradas | Portas expostas
 sudo docker exec -it db-561497 mysql -uroot -proot123
 USE agrotech;
 ```
-7.2 CREATE - Inserir Registro de Solo
+- 7.2 CREATE - Inserir Registro de Solo
 
-API:
+ - API:
 ```
 curl -X POST http://localhost:8080/api/agro/solo \
   -H "Content-Type: application/json" \
   -d '{"umidade":35.5,"temperatura":26.0,"dispositivoId":"ESP32-EVIDENCIA"}'
 ```
-Saída da API:
+-- Saída da API:
 ```
 Ação: SISTEMA DE IRRIGAÇÃO ATIVADO. Solo seco e sem previsão de chuva.
 ```
-SELECT no Banco (Evidência):
+- SELECT no Banco (Evidência):
 ```
 SELECT * FROM tab_registro_solo ORDER BY id_registro DESC LIMIT 1;
 ```
