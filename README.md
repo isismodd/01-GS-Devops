@@ -72,23 +72,15 @@ sudo docker logs db-561497 --tail 30
 
 ```
 # Entrar no container
-sudo docker exec -it app-561497 /bin/sh\
+sudo docker exec -it app-561497 /bin/sh
 ```
 Evidência - Dentro do container:
 ```
-# pwd
-/app
-
-# ls -la
-total 24
-drwxr-xr-x 1 appuser appgroup 4096 Jun  2 03:40 .
-drwxr-xr-x 1 root    root      4096 Jun  2 03:40 ..
--rw-r--r-- 1 appuser appgroup   21 Jun  2 03:40 app.jar
-
-# whoami
-appuser
-
-# exit
+# Dentro do container:
+pwd
+ls -la
+whoami
+exit
 ```
 Usuário não privilegiado (appuser) | Diretório de trabalho (/app)
 
