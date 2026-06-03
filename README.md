@@ -26,8 +26,8 @@ O problema que buscamos resolver é a falta de informação em tempo real para a
 
 ```
 # Clonar o projeto
-git clone https://github.com/isismodd/01-GS-Devops.git
-cd 01-GS-Devops
+git clone https://github.com/isismodd/01GSDevops-561497.git
+cd 01GSDevops-561497
 ```
 ### Verificar estrutura do projeto
 ```
@@ -53,7 +53,7 @@ Saída esperada:
 
 ```
 CONTAINER ID   IMAGE                        NAMES          STATUS
-xxxxxxxxxxxx   01-GS-Devops-561497-app-561497   app-561497     Up
+xxxxxxxxxxxx   01GSDevops-561497-app-561497   app-561497     Up
 xxxxxxxxxxxx   mysql:8.0                    db-561497      Up (healthy)
 ```
 Containers em modo background
@@ -129,7 +129,7 @@ sudo docker exec app-561497 env | grep -E "DB_HOST|SPRING_DATASOURCE"
 Evidência:
 ```
 DB_HOST=db-561497
-SPRING_DATASOURCE_URL=jdbc:mysql://db-561497:3306/agrotech
+SPRING_DATASOURCE_URL=jdbc:mysql://db-561497:3306/01GSDevops
 SPRING_DATASOURCE_USERNAME=root
 SPRING_DATASOURCE_PASSWORD=root123
 ```
