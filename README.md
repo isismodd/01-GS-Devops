@@ -26,8 +26,8 @@ O problema que buscamos resolver é a falta de informação em tempo real para a
 
 ```
 # Clonar o projeto
-git clone https://github.com/seu-usuario/agrotech-561497.git
-cd agrotech-561497
+git clone https://github.com/isismodd/01-GS-Devops.git
+cd 01-GS-Devops
 ```
 ### Verificar estrutura do projeto
 ```
@@ -53,7 +53,7 @@ Saída esperada:
 
 ```
 CONTAINER ID   IMAGE                        NAMES          STATUS
-xxxxxxxxxxxx   agrotech-561497-app-561497   app-561497     Up
+xxxxxxxxxxxx   01-GS-Devops-561497-app-561497   app-561497     Up
 xxxxxxxxxxxx   mysql:8.0                    db-561497      Up (healthy)
 ```
 Containers em modo background
