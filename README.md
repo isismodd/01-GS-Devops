@@ -139,13 +139,8 @@ Variáveis de ambiente configuradas | Portas expostas
 
 ## Passo 8: Executar Testes da API com SELECT no Banco
 
-- 8.1 Conectar ao Banco para Evidências
-```
-# Abrir conexão com o MySQL
-sudo docker exec -it db-561497 mysql -uroot -proot123
-USE agrotech;
-```
-- 8.2 CREATE - Inserir Registro de Solo
+
+- 8.1 CREATE - Inserir Registro de Solo
 
 API:
 ```
@@ -157,8 +152,16 @@ Saída da API:
 ```
 Ação: SISTEMA DE IRRIGAÇÃO ATIVADO. Solo seco e sem previsão de chuva.
 ```
+
+- 8.2 Conectar ao Banco para Evidências
+```
+# Abrir conexão com o MySQL
+sudo docker exec -it db-561497 mysql -uroot -proot123
+```
+
 - SELECT no Banco (Evidência):
 ```
+USE agrotech;
 SELECT * FROM tab_registro_solo ORDER BY id_registro DESC LIMIT 1;
 ```
 Saída do SELECT:
