@@ -327,6 +327,10 @@ Duas tabelas com relacionamento evidenciadas
 
 ---
 
+## Desenho macro da arquitetura da solução
+<img width="1017" height="618" alt="WhatsApp Image 2026-06-03 at 9 15 45 PM" src="https://github.com/user-attachments/assets/e7c8e8d8-faea-4119-8e6a-7f10b41d9ff9" />
+
+
 ## Referências
 
 <span id="fonte-agua"></span>
